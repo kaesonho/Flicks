@@ -34,8 +34,8 @@
     
     CGFloat xMargin = 20;
     CGFloat cardHeight = 250; // arbitrary value
-    CGFloat bottomPadding = 64;
-    CGFloat cardOffset = cardHeight * 0.75;
+    CGFloat bottomPadding = 40;
+    CGFloat cardOffset = cardHeight * 0.76;
     self.scrollView.frame = CGRectMake(xMargin, // x
                                        CGRectGetHeight(self.view.bounds) - cardHeight - bottomPadding, // y
                                        CGRectGetWidth(self.view.bounds) - 2 * xMargin, // width
@@ -62,6 +62,7 @@
     self.descLabel.text = self.movie.movieDescription;
     self.voteLabel.text = self.movie.vote;
     self.durationLabel.text = self.movie.duration;
+    [self.cardView sizeToFit];
 }
 
 - (void) fetchMovie {

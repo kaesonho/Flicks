@@ -24,11 +24,12 @@
     self.movieDescription = dictionary[@"overview"];
     NSString *urlString = [NSString stringWithFormat:@"https://image.tmdb.org/t/p/w342%@", dictionary[@"poster_path"]];
     self.posterURL = [NSURL URLWithString: urlString];
-    int runtime = dictionary[@"runtime"];
+    NSNumber *runtime = dictionary[@"runtime"];
     if (runtime) {
-        self.duration = [NSString stringWithFormat:@"%d hr %d mins", floorf(runtime/60), runtime%60];
+        self.duration = [NSString stringWithFormat:@"%d hr %d mins", runtime.intValue/60, runtime.intValue%60];
     }
-    self.vote = [NSString stringWithFormat:@"%d", dictionary[@"vote_average"]];
+    NSNumber *vote = dictionary[@"vote_average"];
+    self.vote = [NSString stringWithFormat:@"%0.2f", vote.doubleValue];
 }
 
 @end

@@ -10,13 +10,16 @@
 #import "MovieCell.h"
 #import "MovieModel.h"
 #import "MovieDetail.h"
+#import "MovieCollectionViewCell.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
-@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface ViewController () <UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource>
 
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UITableView *movieTableView;
 @property (strong, nonatomic) NSArray<MovieModel *> *movies;
+@property (nonatomic, strong) UICollectionView *movieCollectionView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *viewSwitcher;
 
 @end
 
@@ -25,11 +28,36 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    
     self.movieTableView.dataSource = self;
+    self.movieTableView.delegate = self;
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(onRefresh) forControlEvents:UIControlEventValueChanged];
     [self.movieTableView insertSubview:self.refreshControl atIndex:0];
+    [self.movieTableView setAllowsSelection:YES];
+    
+    // create a collection view
+    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout alloc];
+    
+    UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:CGRectInset(self.view.bounds, 0, 64) collectionViewLayout:layout];
+    
+    [collectionView registerClass:[MovieCollectionViewCell class] forCellWithReuseIdentifier:@"MovieCollectionViewCell"];
+    
+    
+    CGFloat screenWidth = CGRectGetWidth(self.view.bounds);
+    CGFloat itemHeight = 170;
+    CGFloat itemWidth = screenWidth / 3;
+    layout.itemSize = CGSizeMake(itemWidth, itemHeight);
+    layout.scrollDirection= UICollectionViewScrollDirectionVertical;
+    collectionView.dataSource = self;
+    collectionView.delegate = self;
+    
+    
+    [self.view addSubview:collectionView];
+    self.movieCollectionView = collectionView;
+    
     [self fetchMovie:NO];
+    [self switchView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,17 +69,17 @@
     [self fetchMovie:YES];
 }
 
--(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"didSelectRowAtIndexPath");
     [self.movieTableView deselectRowAtIndexPath:indexPath animated:true];
 }
 
--(NSInteger)tableView:(UITableView *)movieTableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)movieTableView numberOfRowsInSection:(NSInteger)section {
     return self.movies.count;
 }
 
 //configure cell
--(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString * const kCellIdentifier = @"MovieTableViewCell";
     MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier forIndexPath:indexPath];
@@ -70,7 +98,7 @@
     [movieDetail setMovie:model];
 }
 
-- (void) fetchMovie: (Boolean)endRefresh {
+- (void) fetchMovie: (Boolean) endRefresh {
     NSString *apiKey = @"a07e22bc18f5cb106bfe4cc1f83ad8ed";
     NSString *urlString;
     if ([self.restorationIdentifier isEqual:@"nowPlaying"]) {
@@ -110,6 +138,7 @@
                                                     }
                                                     self.movies = models;
                                                     [self.movieTableView reloadData];
+                                                    [self.movieCollectionView reloadData];
                                                     if (endRefresh) {
                                                         [self.refreshControl endRefreshing];
                                                     }
@@ -123,5 +152,42 @@
     [task resume];
 }
 
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger) collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return self.movies.count;
+}
+
+- (__kindof UICollectionViewCell*) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    MovieCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MovieCollectionViewCell" forIndexPath:indexPath];
+    MovieModel *model = [self.movies objectAtIndex:indexPath.item];
+    cell.model = model;
+    [cell reloadData];
+    return cell;
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    self.movieCollectionView.frame = self.view.bounds;
+}
+
+# pragma mark - ViewSwitcher
+
+- (void) switchView {
+    if (self.viewSwitcher.selectedSegmentIndex == 0) {
+        self.movieTableView.hidden = NO;
+        self.movieCollectionView.hidden = YES;
+    } else {
+        self.movieTableView.hidden = YES;
+        self.movieCollectionView.hidden = NO;
+    }
+}
+
+- (IBAction)onViewChanged:(id)sender {
+    [self switchView];
+}
 
 @end
