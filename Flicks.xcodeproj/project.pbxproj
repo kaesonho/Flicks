@@ -15,6 +15,9 @@
 		5821DC571E3683EA0044AC6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5821DC551E3683EA0044AC6D /* LaunchScreen.storyboard */; };
 		587F0FFC1E37DAD6002A64A2 /* iconmonstr-video-8-24.png in Resources */ = {isa = PBXBuildFile; fileRef = 587F0FFA1E37DAD6002A64A2 /* iconmonstr-video-8-24.png */; };
 		587F0FFD1E37DAD6002A64A2 /* iconmonstr-star-7-24.png in Resources */ = {isa = PBXBuildFile; fileRef = 587F0FFB1E37DAD6002A64A2 /* iconmonstr-star-7-24.png */; };
+		587F10001E380670002A64A2 /* MovieDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = 587F0FFF1E380670002A64A2 /* MovieDetail.m */; };
+		587F10291E397162002A64A2 /* iconmonstr-time-3-24 (1).png in Resources */ = {isa = PBXBuildFile; fileRef = 587F10271E397162002A64A2 /* iconmonstr-time-3-24 (1).png */; };
+		587F102A1E397162002A64A2 /* iconmonstr-thumb-10-24.png in Resources */ = {isa = PBXBuildFile; fileRef = 587F10281E397162002A64A2 /* iconmonstr-thumb-10-24.png */; };
 		58E8DDFF1E36AF51009B9BA4 /* MovileModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 58E8DDFE1E36AF51009B9BA4 /* MovileModel.m */; };
 		58E8DE021E36BAFD009B9BA4 /* MovieCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 58E8DE011E36BAFD009B9BA4 /* MovieCell.m */; };
 		F95ED43BD374CB76511052AD /* libPods-Flicks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1351EDF6E302ED03EA3B6E6 /* libPods-Flicks.a */; };
@@ -33,6 +36,10 @@
 		5821DC581E3683EA0044AC6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		587F0FFA1E37DAD6002A64A2 /* iconmonstr-video-8-24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iconmonstr-video-8-24.png"; path = "../../../Downloads/iconmonstr-video-8-24.png"; sourceTree = "<group>"; };
 		587F0FFB1E37DAD6002A64A2 /* iconmonstr-star-7-24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iconmonstr-star-7-24.png"; path = "../../../Downloads/iconmonstr-star-7-24.png"; sourceTree = "<group>"; };
+		587F0FFE1E380670002A64A2 /* MovieDetail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieDetail.h; sourceTree = "<group>"; };
+		587F0FFF1E380670002A64A2 /* MovieDetail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieDetail.m; sourceTree = "<group>"; };
+		587F10271E397162002A64A2 /* iconmonstr-time-3-24 (1).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iconmonstr-time-3-24 (1).png"; path = "../../../Downloads/iconmonstr-time-3-24 (1).png"; sourceTree = "<group>"; };
+		587F10281E397162002A64A2 /* iconmonstr-thumb-10-24.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "iconmonstr-thumb-10-24.png"; path = "../../../Downloads/iconmonstr-thumb-10-24.png"; sourceTree = "<group>"; };
 		58E8DDFD1E36AF3D009B9BA4 /* MovieModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MovieModel.h; sourceTree = "<group>"; };
 		58E8DDFE1E36AF51009B9BA4 /* MovileModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovileModel.m; sourceTree = "<group>"; };
 		58E8DE001E36BAFD009B9BA4 /* MovieCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieCell.h; sourceTree = "<group>"; };
@@ -77,6 +84,8 @@
 			children = (
 				587F0FFA1E37DAD6002A64A2 /* iconmonstr-video-8-24.png */,
 				587F0FFB1E37DAD6002A64A2 /* iconmonstr-star-7-24.png */,
+				587F10271E397162002A64A2 /* iconmonstr-time-3-24 (1).png */,
+				587F10281E397162002A64A2 /* iconmonstr-thumb-10-24.png */,
 				5821DC4A1E3683EA0044AC6D /* AppDelegate.h */,
 				5821DC4B1E3683EA0044AC6D /* AppDelegate.m */,
 				5821DC4D1E3683EA0044AC6D /* ViewController.h */,
@@ -84,6 +93,8 @@
 				58E8DDFD1E36AF3D009B9BA4 /* MovieModel.h */,
 				58E8DDFE1E36AF51009B9BA4 /* MovileModel.m */,
 				5821DC501E3683EA0044AC6D /* Main.storyboard */,
+				587F0FFE1E380670002A64A2 /* MovieDetail.h */,
+				587F0FFF1E380670002A64A2 /* MovieDetail.m */,
 				58E8DE001E36BAFD009B9BA4 /* MovieCell.h */,
 				58E8DE011E36BAFD009B9BA4 /* MovieCell.m */,
 				5821DC531E3683EA0044AC6D /* Assets.xcassets */,
@@ -180,11 +191,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				587F10291E397162002A64A2 /* iconmonstr-time-3-24 (1).png in Resources */,
 				587F0FFC1E37DAD6002A64A2 /* iconmonstr-video-8-24.png in Resources */,
 				5821DC571E3683EA0044AC6D /* LaunchScreen.storyboard in Resources */,
 				5821DC541E3683EA0044AC6D /* Assets.xcassets in Resources */,
 				587F0FFD1E37DAD6002A64A2 /* iconmonstr-star-7-24.png in Resources */,
 				5821DC521E3683EA0044AC6D /* Main.storyboard in Resources */,
+				587F102A1E397162002A64A2 /* iconmonstr-thumb-10-24.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,6 +259,7 @@
 				5821DC4F1E3683EA0044AC6D /* ViewController.m in Sources */,
 				58E8DE021E36BAFD009B9BA4 /* MovieCell.m in Sources */,
 				58E8DDFF1E36AF51009B9BA4 /* MovileModel.m in Sources */,
+				587F10001E380670002A64A2 /* MovieDetail.m in Sources */,
 				5821DC4C1E3683EA0044AC6D /* AppDelegate.m in Sources */,
 				5821DC491E3683EA0044AC6D /* main.m in Sources */,
 			);

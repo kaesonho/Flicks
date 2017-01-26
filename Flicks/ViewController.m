@@ -9,10 +9,12 @@
 #import "ViewController.h"
 #import "MovieCell.h"
 #import "MovieModel.h"
+#import "MovieDetail.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
-@interface ViewController () <UITableViewDataSource>
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UITableView *movieTableView;
 @property (strong, nonatomic) NSArray<MovieModel *> *movies;
 
@@ -24,12 +26,24 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.movieTableView.dataSource = self;
-    [self fetchMovie];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(onRefresh) forControlEvents:UIControlEventValueChanged];
+    [self.movieTableView insertSubview:self.refreshControl atIndex:0];
+    [self fetchMovie:NO];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)onRefresh {
+    [self fetchMovie:YES];
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"didSelectRowAtIndexPath");
+    [self.movieTableView deselectRowAtIndexPath:indexPath animated:true];
 }
 
 -(NSInteger)tableView:(UITableView *)movieTableView numberOfRowsInSection:(NSInteger)section {
@@ -48,7 +62,15 @@
     return cell;
 }
 
-- (void) fetchMovie {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    NSIndexPath *indexPath = [self.movieTableView indexPathForSelectedRow];
+    MovieModel *model = [self.movies objectAtIndex:indexPath.row];
+    MovieDetail *movieDetail = [segue destinationViewController];
+    [movieDetail setMovie:model];
+}
+
+- (void) fetchMovie: (Boolean)endRefresh {
     NSString *apiKey = @"a07e22bc18f5cb106bfe4cc1f83ad8ed";
     NSString *urlString;
     if ([self.restorationIdentifier isEqual:@"nowPlaying"]) {
@@ -77,19 +99,25 @@
                                                     [NSJSONSerialization JSONObjectWithData:data
                                                                                     options:kNilOptions
                                                                                       error:&jsonError];
-                                                    NSLog(@"Response: %@", responseDictionary);
+                                                    // NSLog(@"Response: %@", responseDictionary);
                                                     NSArray *results = responseDictionary[@"results"];
                                                     
                                                     NSMutableArray *models = [NSMutableArray array];
                                                     for (NSDictionary *result in results) {
                                                         MovieModel *model = [[MovieModel alloc]initWithDictionary:result];
-                                                        NSLog(@"Model - %@", model);
+                                                        // NSLog(@"Model - %@", model);
                                                         [models addObject:model];
                                                     }
                                                     self.movies = models;
                                                     [self.movieTableView reloadData];
+                                                    if (endRefresh) {
+                                                        [self.refreshControl endRefreshing];
+                                                    }
                                                 } else {
                                                     NSLog(@"An error occurred: %@", error.description);
+                                                    if (endRefresh) {
+                                                        [self.refreshControl endRefreshing];
+                                                    }
                                                 }
                                             }];
     [task resume];
