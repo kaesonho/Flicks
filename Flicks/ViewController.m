@@ -76,7 +76,7 @@
 }
 
 - (void)updateUI {
-    if (self.isError) {
+    if (self.isError == YES) {
         self.errorMessage.hidden = NO;
         self.movieTableView.hidden = YES;
         self.movieCollectionView.hidden = YES;
@@ -151,7 +151,7 @@
                                             completionHandler:^(NSData * _Nullable data,
                                                                 NSURLResponse * _Nullable response,
                                                                 NSError * _Nullable error) {
-                                                if (error) {
+                                                if (!error) {
                                                     NSError *jsonError = nil;
                                                     NSDictionary *responseDictionary =
                                                     [NSJSONSerialization JSONObjectWithData:data
