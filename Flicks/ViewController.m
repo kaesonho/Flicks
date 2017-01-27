@@ -23,6 +23,8 @@
 @property (nonatomic, strong) UICollectionView *movieCollectionView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *viewSwitcher;
 @property (strong, nonatomic) UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UIView *errorMessage;
+@property BOOL isError;
 
 @end
 
@@ -32,6 +34,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    // table view, initegrated with storyboard
     self.movieTableView.dataSource = self;
     self.movieTableView.delegate = self;
     self.refreshControl = [[UIRefreshControl alloc] init];
@@ -42,11 +45,8 @@
     // create a collection view
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout alloc];
     [layout setSectionInset:UIEdgeInsetsMake(64, 0, 50, 0)];
-    
     UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:self.view.bounds collectionViewLayout:layout];
-    
     [collectionView registerClass:[MovieCollectionViewCell class] forCellWithReuseIdentifier:@"MovieCollectionViewCell"];
-    
     CGFloat screenWidth = CGRectGetWidth(self.view.bounds);
     CGFloat itemHeight = 170;
     CGFloat itemWidth = screenWidth / 3;
@@ -54,20 +54,20 @@
     layout.scrollDirection= UICollectionViewScrollDirectionVertical;
     collectionView.dataSource = self;
     collectionView.delegate = self;
-    
     [self.view addSubview:collectionView];
     self.refreshControlC = [[UIRefreshControl alloc] init];
     [self.refreshControlC addTarget:self action:@selector(onRefresh) forControlEvents:UIControlEventValueChanged];
     self.movieCollectionView = collectionView;
     [self.movieCollectionView addSubview:self.refreshControlC];
     
-    [self fetchMovie:NO];
-    [self switchView];
-    
+    // Search bar
     UISearchBar *searchBar = [[UISearchBar alloc] init];
     self.navigationItem.titleView = searchBar;
     self.searchBar = searchBar;
     searchBar.delegate = self;
+    
+    [self fetchMovie:NO];
+    [self updateUI];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -75,7 +75,16 @@
     // Dispose of any resources that can be recreated.
 }
 
-
+- (void)updateUI {
+    if (self.isError) {
+        self.errorMessage.hidden = NO;
+        self.movieTableView.hidden = YES;
+        self.movieCollectionView.hidden = YES;
+    } else {
+        self.errorMessage.hidden = YES;
+        [self switchView];
+    }
+}
 
 # pragma mark TableView
 
@@ -142,7 +151,7 @@
                                             completionHandler:^(NSData * _Nullable data,
                                                                 NSURLResponse * _Nullable response,
                                                                 NSError * _Nullable error) {
-                                                if (!error) {
+                                                if (error) {
                                                     NSError *jsonError = nil;
                                                     NSDictionary *responseDictionary =
                                                     [NSJSONSerialization JSONObjectWithData:data
@@ -165,12 +174,16 @@
                                                         [self.refreshControl endRefreshing];
                                                         [self.refreshControlC endRefreshing];
                                                     }
+                                                    self.isError = NO;
+                                                    [self updateUI];
                                                 } else {
+                                                    self.isError = YES;
                                                     NSLog(@"An error occurred: %@", error.description);
                                                     if (endRefresh) {
                                                         [self.refreshControl endRefreshing];
                                                         [self.refreshControlC endRefreshing];
                                                     }
+                                                    [self updateUI];
                                                 }
                                             }];
     [task resume];
@@ -214,7 +227,7 @@
 }
 
 - (IBAction)onViewChanged:(id)sender {
-    [self switchView];
+    [self updateUI];
 }
 
 # pragma mark UISearchBar
