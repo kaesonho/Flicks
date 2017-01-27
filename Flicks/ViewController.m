@@ -13,13 +13,16 @@
 #import "MovieCollectionViewCell.h"
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
-@interface ViewController () <UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource>
+@interface ViewController () <UITableViewDataSource, UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate>
 
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) UIRefreshControl *refreshControlC;
 @property (weak, nonatomic) IBOutlet UITableView *movieTableView;
 @property (strong, nonatomic) NSArray<MovieModel *> *movies;
+@property (strong, nonatomic) NSArray<MovieModel *> *moviesSource;
 @property (nonatomic, strong) UICollectionView *movieCollectionView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *viewSwitcher;
+@property (strong, nonatomic) UISearchBar *searchBar;
 
 @end
 
@@ -38,11 +41,11 @@
     
     // create a collection view
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout alloc];
+    [layout setSectionInset:UIEdgeInsetsMake(64, 0, 50, 0)];
     
-    UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:CGRectInset(self.view.bounds, 0, 64) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc]initWithFrame:self.view.bounds collectionViewLayout:layout];
     
     [collectionView registerClass:[MovieCollectionViewCell class] forCellWithReuseIdentifier:@"MovieCollectionViewCell"];
-    
     
     CGFloat screenWidth = CGRectGetWidth(self.view.bounds);
     CGFloat itemHeight = 170;
@@ -52,12 +55,19 @@
     collectionView.dataSource = self;
     collectionView.delegate = self;
     
-    
     [self.view addSubview:collectionView];
+    self.refreshControlC = [[UIRefreshControl alloc] init];
+    [self.refreshControlC addTarget:self action:@selector(onRefresh) forControlEvents:UIControlEventValueChanged];
     self.movieCollectionView = collectionView;
+    [self.movieCollectionView addSubview:self.refreshControlC];
     
     [self fetchMovie:NO];
     [self switchView];
+    
+    UISearchBar *searchBar = [[UISearchBar alloc] init];
+    self.navigationItem.titleView = searchBar;
+    self.searchBar = searchBar;
+    searchBar.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -65,9 +75,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)onRefresh {
-    [self fetchMovie:YES];
-}
+
+
+# pragma mark TableView
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"didSelectRowAtIndexPath");
@@ -90,13 +100,24 @@
     return cell;
 }
 
+# pragma mark segue for detail view
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    NSIndexPath *indexPath = [self.movieTableView indexPathForSelectedRow];
-    MovieModel *model = [self.movies objectAtIndex:indexPath.row];
+    NSIndexPath *indexPath;
+    MovieModel *model;
+    if (self.viewSwitcher.selectedSegmentIndex == 0) {
+        indexPath = [self.movieTableView indexPathForSelectedRow];
+        model = [self.movies objectAtIndex:indexPath.row];
+    } else {
+        indexPath = [[self.movieCollectionView indexPathsForSelectedItems] objectAtIndex:0];
+        model = [self.movies objectAtIndex:indexPath.item];
+    }
     MovieDetail *movieDetail = [segue destinationViewController];
     [movieDetail setMovie:model];
 }
+
+# pragma mark data fetching
 
 - (void) fetchMovie: (Boolean) endRefresh {
     NSString *apiKey = @"a07e22bc18f5cb106bfe4cc1f83ad8ed";
@@ -137,19 +158,26 @@
                                                         [models addObject:model];
                                                     }
                                                     self.movies = models;
+                                                    self.moviesSource = models;
                                                     [self.movieTableView reloadData];
                                                     [self.movieCollectionView reloadData];
                                                     if (endRefresh) {
                                                         [self.refreshControl endRefreshing];
+                                                        [self.refreshControlC endRefreshing];
                                                     }
                                                 } else {
                                                     NSLog(@"An error occurred: %@", error.description);
                                                     if (endRefresh) {
                                                         [self.refreshControl endRefreshing];
+                                                        [self.refreshControlC endRefreshing];
                                                     }
                                                 }
                                             }];
     [task resume];
+}
+
+- (void)onRefresh {
+    [self fetchMovie:YES];
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -168,10 +196,9 @@
     return cell;
 }
 
-- (void)viewDidLayoutSubviews
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    [super viewDidLayoutSubviews];
-    self.movieCollectionView.frame = self.view.bounds;
+    [self performSegueWithIdentifier: @"ToDetailView" sender: self];
 }
 
 # pragma mark - ViewSwitcher
@@ -188,6 +215,20 @@
 
 - (IBAction)onViewChanged:(id)sender {
     [self switchView];
+}
+
+# pragma mark UISearchBar
+
+- (void) searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    
+    NSPredicate *predicate = [NSPredicate predicateWithBlock: ^BOOL(MovieModel *obj, NSDictionary *bind) {
+        return [searchText length] == 0 || [obj.title containsString:searchText];
+    }];
+
+    self.movies = [self.moviesSource filteredArrayUsingPredicate:predicate];
+    [self.movieTableView reloadData];
+    [self.movieCollectionView reloadData];
 }
 
 @end

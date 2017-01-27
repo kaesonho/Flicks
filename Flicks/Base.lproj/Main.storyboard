@@ -80,7 +80,7 @@
                                             <outlet property="descLabel" destination="29t-XA-pny" id="CRz-st-97A"/>
                                             <outlet property="posterImg" destination="oSR-Kz-meZ" id="4dj-My-mKZ"/>
                                             <outlet property="titleLabel" destination="fJr-r7-jdZ" id="XpT-da-DKZ"/>
-                                            <segue destination="QTG-Us-gwo" kind="show" id="IVQ-xD-Gne"/>
+                                            <segue destination="QTG-Us-gwo" kind="show" identifier="ToDetailView" id="IVQ-xD-Gne"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -249,7 +249,7 @@
                                             <outlet property="descLabel" destination="Bb0-rh-JFH" id="j1A-y3-Oo9"/>
                                             <outlet property="posterImg" destination="bx5-ks-ft3" id="uLr-Tl-6VT"/>
                                             <outlet property="titleLabel" destination="Ked-Zv-lQz" id="ExJ-z0-czH"/>
-                                            <segue destination="QTG-Us-gwo" kind="show" id="gqy-21-kvv"/>
+                                            <segue destination="QTG-Us-gwo" kind="show" identifier="ToDetailView" id="gqy-21-kvv"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -291,10 +291,11 @@
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-3"/>
                     </tabBarItem>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="bXJ-19-5eP">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="bXJ-19-5eP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.90946089659999996" green="0.66449839359999996" blue="0.061092819940000001" alpha="0.83394281910000001" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="barTintColor" red="0.90946089659999996" green="0.66449839359999996" blue="0.061092819940000001" alpha="0.83394281910000001" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -314,10 +315,11 @@
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="-3"/>
                     </tabBarItem>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="aYl-eN-W8a">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="aYl-eN-W8a">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" red="0.90946089659999996" green="0.66449839359999996" blue="0.061092819940000001" alpha="0.83394281910000001" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="barTintColor" red="0.90946089659999996" green="0.66449839359999996" blue="0.061092819940000001" alpha="0.83394281910000001" colorSpace="calibratedRGB"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -339,6 +341,6 @@
         <image name="iconmonstr-view-5-16.png" width="16" height="16"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="gqy-21-kvv"/>
+        <segue reference="IVQ-xD-Gne"/>
     </inferredMetricsTieBreakers>
 </document>
